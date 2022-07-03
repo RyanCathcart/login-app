@@ -76,7 +76,7 @@ builder.Services.AddDbContext<StoreContext>(opt =>
     // or from the environment variable from Heroku, use it to set up your DbContext.
     opt.UseNpgsql(connStr);
 });
-
+builder.Services.AddCors();
 builder.Services.AddIdentityCore<User>(opt =>
 {
     opt.User.RequireUniqueEmail = true;
@@ -108,7 +108,14 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+// app.UseHttpsRedirection();
+
+app.UseRouting();
+
+app.UseCors(opt =>
+{
+    opt.AllowAnyHeader().AllowAnyMethod().AllowCredentials().WithOrigins("http://localhost:3000");
+});
 
 app.UseAuthentication();
 app.UseAuthorization();

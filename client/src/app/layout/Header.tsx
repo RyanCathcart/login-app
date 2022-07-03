@@ -1,5 +1,7 @@
 import { AppBar, Box, List, ListItem, Toolbar, Typography } from '@mui/material';
 import { NavLink } from 'react-router-dom';
+import { useAppSelector } from '../store/configureStore';
+import SignedInMenu from './SignedInMenu';
 
 const rightLinks = [
   { title: "Login", path: "/login" },
@@ -15,6 +17,7 @@ const navStyles = {
 };
 
 export default function Header() {
+  const { user } = useAppSelector((state) => state.account);
   return (
     <AppBar position='static'>
       <Toolbar
@@ -33,7 +36,10 @@ export default function Header() {
             Login App
           </Typography>
         </Box>
-        <List sx={{ display: "flex" }}>
+        {user ? (
+          <SignedInMenu />
+        ) : (
+          <List sx={{ display: "flex" }}>
           {rightLinks.map(({ title, path }) => (
             <ListItem
               component={NavLink}
@@ -45,6 +51,7 @@ export default function Header() {
             </ListItem>
           ))}
         </List>
+        )}
       </Toolbar>
     </AppBar>
   );
