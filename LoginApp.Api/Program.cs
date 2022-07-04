@@ -42,6 +42,8 @@ builder.Services.AddSwaggerGen(c =>
         }
     });
 });
+
+// Add StoreContext as a service
 builder.Services.AddDbContext<StoreContext>(opt =>
 {
     var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
@@ -73,9 +75,10 @@ builder.Services.AddDbContext<StoreContext>(opt =>
     }
 
     // Whether the connection string came from the local development configuration file
-    // or from the environment variable from Heroku, use it to set up your DbContext.
+    // or from the environment variable from Heroku, use it to set up the DbContext.
     opt.UseNpgsql(connStr);
 });
+// Add CORS as a service
 builder.Services.AddCors();
 builder.Services.AddIdentityCore<User>(opt =>
 {
@@ -108,10 +111,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-// app.UseHttpsRedirection();
+app.UseHttpsRedirection();
 
 app.UseRouting();
 
+// Allow requests from React dev server
 app.UseCors(opt =>
 {
     opt.AllowAnyHeader().AllowAnyMethod().AllowCredentials().WithOrigins("http://localhost:3000");
@@ -122,6 +126,7 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+// Attempt to migrate data into the db on backend startup
 using var scope = app.Services.CreateScope();
 var context = scope.ServiceProvider.GetRequiredService<StoreContext>();
 var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();

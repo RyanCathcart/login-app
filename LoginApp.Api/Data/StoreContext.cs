@@ -13,6 +13,7 @@ public class StoreContext : IdentityDbContext<User, Role, int>
     {
         base.OnModelCreating(builder);
 
+        // Populates AspNetRoles with a member and admin role
         builder.Entity<Role>()
             .HasData(
                 new Role { Id = 1, Name = "Member", NormalizedName = "MEMBER" },
